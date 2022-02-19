@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: SANGEETHAPC
 
 steps:
 - task: Maven@3
