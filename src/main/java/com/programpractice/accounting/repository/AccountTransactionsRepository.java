@@ -51,8 +51,8 @@ public class AccountTransactionsRepository {
 	    	  Query query= session.createQuery(jpql);
 	    	  query.setParameter("param1", Ikey);
 	    	  Optional<Integer>val= query.uniqueResultOptional();
-	    	  if(val.isEmpty()) {
-	    		  return true;
+	    	  if(val.isPresent()) {
+	    		  return false;
 	    	  }
 	      }
 	      catch (HibernateException e) {
@@ -61,7 +61,7 @@ public class AccountTransactionsRepository {
 	      }finally {
 	         session.close(); 
 	      }
-		return false;
+		return true;
 	}
 	
 
