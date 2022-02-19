@@ -7,7 +7,7 @@ trigger:
 - main
 
 pool:
-  vmImage: SANGEETHAPC
+    name: Default
 
 steps:
 - task: Maven@3
