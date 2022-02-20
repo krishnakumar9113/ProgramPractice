@@ -18,8 +18,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.programpractice.accounting.customvalidator.TransactionTypeConstraint;
 import com.programpractice.accounting.utils.UtilConstants.TransactionType;
 
-import lombok.Getter;
-
 
 @Entity
 @Table(name = "AccountTransaction")

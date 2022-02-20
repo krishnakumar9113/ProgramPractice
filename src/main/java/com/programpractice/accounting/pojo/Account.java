@@ -55,10 +55,15 @@ public class Account {
 	 
 	 
 	@JsonIgnore
-	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+	@OneToMany(mappedBy = "account",cascade = CascadeType.ALL)
+	@OnDelete(action = OnDeleteAction.CASCADE )
 	private List<AccountTransaction>  accountTransaction;
 
+	@JsonIgnore
+	@OneToMany(mappedBy = "account",cascade = CascadeType.ALL)
+	@OnDelete(action = OnDeleteAction.CASCADE )
+	private List<InterestHistory>  interestHistory;
+	
 
 	public void setTransactions(List<AccountTransaction> accountTransaction) {
 		this.accountTransaction = accountTransaction;
