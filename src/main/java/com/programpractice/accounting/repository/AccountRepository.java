@@ -83,6 +83,26 @@ public class AccountRepository {
 	      }
 		return account;
 	}
+	
+	public boolean deleteAccount(long identification) {
+		// TODO Auto-generated method stub
+		Session session =getCurrentSession();
+		session.clear();
+		  Transaction tx = null;
+	      try{
+	         tx = session.beginTransaction();
+	        Account account= session.get(Account.class,identification);
+	         session.delete(account); 
+	         tx.commit();
+	      }catch (HibernateException e) {
+	         if (tx!=null) tx.rollback();
+	         e.printStackTrace(); 
+	         return false;
+	      }finally {
+	        session.close(); 
+	      }
+		return true;
+	}
 
 	public boolean updateInterestAmount() throws HibernateException {
 		// TODO Auto-generated method stub
@@ -106,7 +126,7 @@ public class AccountRepository {
 		         InterestHistory interestHistory= new InterestHistory();
 		         interestHistory.setAccount(account);
 		         interestHistory.setCalculatedamt(interestAmount);
-		         interestHistory.setCalculatedDate(LocalDateTime.now());
+		         interestHistory.setCalculatedDate(LocalDateTime.now(Clock.systemUTC()));
 		         
 		         session.save(interestHistory);
 		         session.save(accountTransaction);

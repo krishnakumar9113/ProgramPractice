@@ -1,8 +1,5 @@
 package com.programpractice.accounting.controller;
 
-import java.math.BigDecimal;
-import java.time.Clock;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,23 +11,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.programpractice.accounting.pojo.AccountOpening;
-import com.programpractice.accounting.repository.AccountRepository;
 import com.programpractice.accounting.service.AccountService;
+import static com.programpractice.accounting.utils.Utilities.createJsonMessage;
 
 @RestController
 @CrossOrigin
-//@RequestMapping("/api")
+@RequestMapping("/account")
 public class AccountController {
 
 	@Autowired
 	AccountService accountService;
 	
-	@PostMapping("/processAccountOpening")
+	@PostMapping("/process-account-opening")
 	public ResponseEntity processAccountOpening(@Valid @RequestBody AccountOpening account, BindingResult bindingResult)
 
 	{
@@ -53,9 +53,19 @@ public class AccountController {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.badRequest()
-					.body("Server error has encountered, failed to save the record");
+					.body(createJsonMessage("Server error has encountered, failed to save the record"));
 		}
 	}
 
-
+	@DeleteMapping ("/delete-account/{identification}")
+	public ResponseEntity processAccountOpening(@PathVariable("identification") long identifcationNumber) {
+		if(accountService.deleteAccountById(identifcationNumber)) {
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(createJsonMessage("Account deleted successfully"));
+			
+		}
+		 return ResponseEntity.badRequest()
+					.body(createJsonMessage("Account deletion failed"));
+		
+	}
 }

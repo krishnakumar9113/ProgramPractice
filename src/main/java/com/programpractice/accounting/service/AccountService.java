@@ -34,4 +34,7 @@ public class AccountService {
 	public Account getAccountById(Long identification) {
 		return accountRepository.getAccountById(identification).get();
 	}
+	public boolean deleteAccountById(Long identification) {
+		return accountRepository.deleteAccount(identification);
+	}
 }

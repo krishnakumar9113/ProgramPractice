@@ -29,7 +29,6 @@ public class EodBalanceStatusRepository {
     public boolean getEodBalanceStatusForToday() {
 		// TODO Auto-generated method stub
 		Session session =getCurrentSession();
-		session.clear();
 	      try{
 			   	  
 	    	  String jpql = "select e from EodBalanceStatus e where e.executeddate = :date";
@@ -50,7 +49,7 @@ public class EodBalanceStatusRepository {
 	public void setEodBalanceStatusForToday() {
 		// TODO Auto-generated method stub
 		Session session =getCurrentSession();
-		session.clear();
+
 	      try{
 	         EodBalanceStatus eodBalanceStatus = new EodBalanceStatus();
 	         eodBalanceStatus.setExecuted(true);

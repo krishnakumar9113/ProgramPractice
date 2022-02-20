@@ -49,7 +49,7 @@ public class InterestHistoryRepository {
 	      try{
 	    	  
 		  String jpql = "select  e.account.identification as identification ,sum(e.calculatedamt) as calculatedamt from InterestHistory e where date_part('month',e.calculatedDate) = :month and date_part('year',e.calculatedDate) = :year GROUP BY e.account.identification";
-	    Query query=  session.createQuery(jpql).setParameter(":month",month).setParameter(":year",year)
+	    Query query=  session.createQuery(jpql).setParameter("month",Double.parseDouble(month)).setParameter("year",Double.parseDouble(year))
 	    		.setResultTransformer(Transformers.aliasToBean(MonthlyStatus.class));
 	    lst= query.getResultList();
 
@@ -70,10 +70,8 @@ public class InterestHistoryRepository {
 			  String query="SELECT acc FROM Account acc";
 		Stream<Account>  accountsStream=  session.createQuery(query, Account.class).stream();
 		accountsStream.forEach(account -> { 	
-			 Transaction tx =null;
 			 try{
 		    	 BigDecimal interestAmount=Utilities.calculateSimpleInterestPerDay(account.getBalance());
-		    	 tx = session.beginTransaction();
 		     	 account.setBalance(account.getBalance().add(interestAmount));
 		     	 
 		         AccountTransaction accountTransaction= new AccountTransaction();
@@ -86,16 +84,13 @@ public class InterestHistoryRepository {
 		         InterestHistory interestHistory= new InterestHistory();
 		         interestHistory.setAccount(account);
 		         interestHistory.setCalculatedamt(interestAmount);
-		         interestHistory.setCalculatedDate(LocalDateTime.now());
+		         interestHistory.setCalculatedDate(LocalDateTime.now(Clock.systemUTC()));
 		         
 		         session.save(interestHistory);
 		         session.save(accountTransaction);
 		         session.saveOrUpdate(account); 
-		         
-		         tx.commit();
-		        
+		         		       
 			 }catch (HibernateException e) {
-		         if (tx!=null) tx.rollback();
 		         throw e;
 		      }
 			

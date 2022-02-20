@@ -17,26 +17,26 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.programpractice.accounting.pojo.AccountTransaction;
-import com.programpractice.accounting.repository.AccountTransactionsRepository;
 import com.programpractice.accounting.service.AccountTransactionService;
 import com.programpractice.accounting.utils.UtilConstants;
 import com.programpractice.accounting.utils.UtilConstants.TransactionStates;
 
-
+import static com.programpractice.accounting.utils.Utilities.createJsonMessage;
 
 @RestController
 @CrossOrigin
-//@RequestMapping("/api")
+@RequestMapping("/transactions")
 public class AccountTransactionController {
 
 	@Autowired 
 	private AccountTransactionService accountTransactionService;
 	
 		
-	@PostMapping("/transactions/{identification}") 
+	@PostMapping("/create-transactions/{identification}") 
 	private ResponseEntity saveTransactions( @Valid @RequestBody AccountTransaction transaction,@PathVariable("identification") long identification,
 			@RequestHeader("Idempotency-Key") String IKey, BindingResult bindingResult)   
 	{  
@@ -50,13 +50,13 @@ public class AccountTransactionController {
 			transaction.setTxnDate(LocalDateTime.now(Clock.systemUTC()));
 			TransactionStates transactionResult=accountTransactionService.createTransaction(transaction, identification);
 			if(transactionResult.equals(TransactionStates.CREATED)) {
-				responseEntity= ResponseEntity.status(HttpStatus.CREATED).body(UtilConstants.VALID_TRANSACTION_MESSAGE);
+				responseEntity= ResponseEntity.status(HttpStatus.CREATED).body(createJsonMessage(UtilConstants.VALID_TRANSACTION_MESSAGE));
 			}
 			if(transactionResult.equals(TransactionStates.DUPLICATE_KEY)) {
-				responseEntity= ResponseEntity.status(HttpStatus.CONFLICT).body(UtilConstants.DUPLICATE_IKEY_MESSAGE);
+				responseEntity= ResponseEntity.status(HttpStatus.CONFLICT).body(createJsonMessage(UtilConstants.DUPLICATE_IKEY_MESSAGE));
 			}
 			if(transactionResult.equals(TransactionStates.FAILED)) {
-				responseEntity= ResponseEntity.status(HttpStatus.BAD_REQUEST).body(UtilConstants.TRANSACTION_FAILED_MESSAGE);
+				responseEntity= ResponseEntity.status(HttpStatus.BAD_REQUEST).body(createJsonMessage(UtilConstants.TRANSACTION_FAILED_MESSAGE));
 			}
 		
 		}else {

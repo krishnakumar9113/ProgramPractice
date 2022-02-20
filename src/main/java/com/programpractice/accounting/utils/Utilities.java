@@ -18,4 +18,8 @@ public class Utilities {
 		  return dailyInterest;
 		 
 	}
+	
+	public static String createJsonMessage(String message) {
+		return "{\"result\":\""+message+"\"}";
+	}
 }

@@ -34,7 +34,7 @@ public class InterestService {
 	public void processEndOfDayBalances() {
 		
 		if(!eodBalanceStatusRepository.getEodBalanceStatusForToday()) {
-			if(accountRepository.updateInterestAmount()) {
+			if(interestHistoryRepository.updateInterestAmount()) {
 				eodBalanceStatusRepository.setEodBalanceStatusForToday();
 			}
 		}

@@ -42,7 +42,7 @@ class AccountControllerTest {
     	when(service.createNewAccount( Mockito.any(AccountOpening.class))).thenReturn(accountOpening);
 		try {
 			mockMvc.perform( MockMvcRequestBuilders
-				      .post("/processAccountOpening")
+				      .post("/account/process-account-opening")
 				      .content(" { \"bsb\":\"123456\" }")
 				      .contentType(MediaType.APPLICATION_JSON)
 				      .accept(MediaType.APPLICATION_JSON))	
