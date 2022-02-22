@@ -53,7 +53,7 @@ public class AccountController {
 	}
 
 	@DeleteMapping("/delete-account/{identification}")
-	public ResponseEntity<String> processAccountOpening(@PathVariable("identification") long identifcationNumber) {
+	public ResponseEntity<String> deleteAccount(@PathVariable("identification") long identifcationNumber) {
 		if (accountService.deleteAccountById(identifcationNumber)) {
 			return ResponseEntity.status(HttpStatus.OK).body(createJsonMessage("Account deleted successfully"));
 
