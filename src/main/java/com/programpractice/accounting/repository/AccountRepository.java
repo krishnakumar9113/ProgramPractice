@@ -138,7 +138,7 @@ public class AccountRepository {
 	}
 
 	public Optional<Account> getAccountById(Long identification) {
-		return Optional.of(getCurrentSession().get(Account.class, identification));
+		return Optional.ofNullable(getCurrentSession().get(Account.class, identification));
 	}
 
 }

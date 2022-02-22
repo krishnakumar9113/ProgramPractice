@@ -40,32 +40,43 @@ public class AccountTransactionController {
 			@PathVariable("identification") long identification, @RequestHeader("Idempotency-Key") String iKey,
 			BindingResult bindingResult) {
 		// TODO: update with DTO Objects
-		ResponseEntity<Object> responseEntity = null;
-		List<FieldError> be = new ArrayList<>();
-		if (bindingResult.hasErrors()) {
-			be.addAll(bindingResult.getFieldErrors());
-		}
-		if (be.isEmpty()) {
+		try {
+			List<FieldError> be = new ArrayList<>();
+			if (bindingResult.hasErrors()) {
+				be.addAll(bindingResult.getFieldErrors());
+			}
+			if (!be.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(be);
+			}
+
 			transaction.setIkey(iKey);
 			transaction.setTxnDate(LocalDateTime.now(Clock.systemUTC()));
 			TransactionStates transactionResult = accountTransactionService.createTransaction(transaction,
 					identification);
 			if (transactionResult.equals(TransactionStates.CREATED)) {
-				responseEntity = ResponseEntity.status(HttpStatus.CREATED)
+				return ResponseEntity.status(HttpStatus.CREATED)
 						.body(createJsonMessage(UtilConstants.VALID_TRANSACTION_MESSAGE));
 			}
 			if (transactionResult.equals(TransactionStates.DUPLICATE_KEY)) {
-				responseEntity = ResponseEntity.status(HttpStatus.CONFLICT)
+				return ResponseEntity.status(HttpStatus.CONFLICT)
 						.body(createJsonMessage(UtilConstants.DUPLICATE_IKEY_MESSAGE));
 			}
+			if (transactionResult.equals(TransactionStates.INVALID_ACCOUNT)) {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND)
+						.body(createJsonMessage(UtilConstants.ACCOUNT_NOT_FOUND));
+			}
 			if (transactionResult.equals(TransactionStates.FAILED)) {
-				responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 						.body(createJsonMessage(UtilConstants.TRANSACTION_FAILED_MESSAGE));
 			}
 
-		} else {
-			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(be);
+		} catch (Exception exception) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body(createJsonMessage(UtilConstants.TRANSACTION_FAILED_MESSAGE));
 		}
-		return responseEntity;
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(createJsonMessage(UtilConstants.TRANSACTION_FAILED_MESSAGE));
+
 	}
+
 }

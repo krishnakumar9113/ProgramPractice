@@ -20,6 +20,7 @@ public class UtilConstants {
 	public static final String VALID_TRANSACTION_MESSAGE = "Transaction created successfully";
 	public static final String DUPLICATE_IKEY_MESSAGE = "Similar transaction has been already created";
 	public static final String TRANSACTION_FAILED_MESSAGE = "Transaction failed";
+	public static final String ACCOUNT_NOT_FOUND = "Account Number not valid";
 	public static final BigDecimal RATE_OF_INTEREST = BigDecimal.valueOf(0.05);
 	public static final BigDecimal NO_OF_DAYS_YEAR;
 

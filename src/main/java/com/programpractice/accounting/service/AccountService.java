@@ -29,14 +29,6 @@ public class AccountService {
 		return accountRepository.getAllAccountsBalance();
 	}
 
-	public Account getAccountById(Long identification) {
-		Optional<Account> account = accountRepository.getAccountById(identification);
-		if (account.isPresent()) {
-			return account.get();
-		}
-		return null;
-	}
-
 	public boolean deleteAccountById(Long identification) {
 		return accountRepository.deleteAccount(identification);
 	}
