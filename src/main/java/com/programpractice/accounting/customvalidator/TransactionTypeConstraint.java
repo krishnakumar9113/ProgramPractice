@@ -9,17 +9,14 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 
-import com.programpractice.accounting.utils.UtilConstants.TransactionType;
+@Documented
+@Constraint(validatedBy = TransactionTypeValidator.class)
+@Target({ ElementType.METHOD, ElementType.FIELD })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface TransactionTypeConstraint {
+	String message() default "Please  enter a valid tranaction type either \"CRDT\" or \"DBIT\"";
 
+	Class<?>[] groups() default {};
 
-
-	@Documented
-	@Constraint(validatedBy = TransactionTypeValidator.class)
-	@Target( { ElementType.METHOD, ElementType.FIELD })
-	@Retention(RetentionPolicy.RUNTIME)
-	public @interface TransactionTypeConstraint {
-	    String message() default "Please  enter a valid tranaction type either \"CRDT\" or \"DBIT\"";
-	    Class<?>[] groups() default {};
-	    Class<? extends Payload>[] payload() default {};
-	}
-
+	Class<? extends Payload>[] payload() default {};
+}

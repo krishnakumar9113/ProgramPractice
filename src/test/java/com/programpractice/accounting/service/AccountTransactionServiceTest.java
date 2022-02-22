@@ -27,39 +27,35 @@ import com.programpractice.accounting.utils.UtilConstants.TransactionType;
 @RunWith(SpringRunner.class)
 class AccountTransactionServiceTest {
 
-	
 	@Mock
-	AccountTransactionsRepository transactionRepository ;
-	
+	AccountTransactionsRepository transactionRepository;
+
 	@Mock
-	AccountRepository accountRepository ;
-	
-	
+	AccountRepository accountRepository;
+
 	@InjectMocks
 	AccountTransactionService accountTransactionService;
 
 	@Test
 	void createSuccessfulTransaction() {
-		
-		 	
-		Account account= new Account();
+
+		Account account = new Account();
 		account.setBsb(1234);
 		account.setBalance(new BigDecimal(100));
-		
-		AccountTransaction accountTransaction =new AccountTransaction();
+
+		AccountTransaction accountTransaction = new AccountTransaction();
 		accountTransaction.setIkey("abcd");
 		accountTransaction.setTxnAmount(new BigDecimal(10));
 		accountTransaction.setTxnDate(LocalDateTime.now(Clock.systemUTC()));
 		accountTransaction.setTxnType(TransactionType.CRDT);
 		accountTransaction.setAccount(account);
-		
-		
+
 		Mockito.when(accountRepository.getAccountById(anyLong())).thenReturn(Optional.of(account));
 		Mockito.when(transactionRepository.checkValidTransaction(Mockito.anyString())).thenReturn(true);
 		Mockito.when(accountRepository.updateAccount(account)).thenReturn(true);
 		Mockito.when(transactionRepository.saveOrUpdate(accountTransaction)).thenReturn(true);
-		
-		assertEquals(TransactionStates.CREATED,accountTransactionService.createTransaction(accountTransaction, 1234));
+
+		assertEquals(TransactionStates.CREATED, accountTransactionService.createTransaction(accountTransaction, 1234));
 	}
 
 }

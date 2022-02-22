@@ -18,12 +18,13 @@ public class ProcessInterestAmountScheduler {
 	private static final Logger logger = LoggerFactory.getLogger(ProcessInterestAmountScheduler.class);
 	@Autowired
 	InterestService interestService;
-	 @Async("asyncExecutor")
-	    @Scheduled(cron = "0 00 22 * * *")
-	    public void scheduleProcessEndOfDayBalances() throws InterruptedException {
-	    	 logger.info("Scheduled processing of Interest rate started at "+LocalDate.now());
-	    	 interestService.processEndOfDayBalances();
-	    	 logger.info("Scheduled processing of Interest rate ended  at "+LocalDate.now());
-	 
-	    }
+
+	@Async("asyncExecutor")
+	@Scheduled(cron = "0 00 22 * * *")
+	public void scheduleProcessEndOfDayBalances() {
+		logger.info("Scheduled processing of Interest rate started at {}", LocalDate.now());
+		interestService.processEndOfDayBalances();
+		logger.info("Scheduled processing of Interest rate ended  at {}", LocalDate.now());
+
+	}
 }

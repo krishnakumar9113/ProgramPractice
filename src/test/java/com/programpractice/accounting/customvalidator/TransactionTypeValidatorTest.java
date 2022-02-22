@@ -12,21 +12,19 @@ import com.programpractice.accounting.utils.UtilConstants.TransactionType;
 
 class TransactionTypeValidatorTest {
 
-	 
-	  private TransactionTypeConstraint transactionTypeConstraint=   Mockito.mock(TransactionTypeConstraint.class);
+	private TransactionTypeConstraint transactionTypeConstraint = Mockito.mock(TransactionTypeConstraint.class);
 
-	  private ConstraintValidatorContext constraintValidatorContext;
+	private ConstraintValidatorContext constraintValidatorContext;
 
-	  @Test
-	  public void testIsValidCredit() {
+	@Test
+	void testIsValidCredit() {
 
-
-	    TransactionTypeValidator transactionTypeValidator = new TransactionTypeValidator();
-	    transactionTypeValidator.initialize(transactionTypeConstraint);
-	    AccountTransaction accountTransaction = new AccountTransaction();
-	    accountTransaction.setTxnType(TransactionType.CRDT);
-	    boolean result = transactionTypeValidator.isValid(accountTransaction.getTxnType(), constraintValidatorContext);
-	    assertTrue(result);
-	  }
+		TransactionTypeValidator transactionTypeValidator = new TransactionTypeValidator();
+		transactionTypeValidator.initialize(transactionTypeConstraint);
+		AccountTransaction accountTransaction = new AccountTransaction();
+		accountTransaction.setTxnType(TransactionType.CRDT);
+		boolean result = transactionTypeValidator.isValid(accountTransaction.getTxnType(), constraintValidatorContext);
+		assertTrue(result);
+	}
 
 }

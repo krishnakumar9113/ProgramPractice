@@ -9,34 +9,28 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.programpractice.accounting.pojo.MonthlyStatus;
-import com.programpractice.accounting.repository.AccountRepository;
 import com.programpractice.accounting.repository.EodBalanceStatusRepository;
 import com.programpractice.accounting.repository.InterestHistoryRepository;
 
 @Service
 public class InterestService {
-	
-	@Autowired
-	private AccountRepository accountRepository;
-	
+
 	@Autowired
 	private InterestHistoryRepository interestHistoryRepository;
-	
+
 	@Autowired
 	private EodBalanceStatusRepository eodBalanceStatusRepository;
-	
 
-	public CompletableFuture<List<MonthlyStatus>>  calculateMonthlyInterest(String month, String year) {
-		return  interestHistoryRepository.calculateMonthlyAccuredInterest(month, year);
+	public CompletableFuture<List<MonthlyStatus>> calculateMonthlyInterest(String month, String year) {
+		return interestHistoryRepository.calculateMonthlyAccuredInterest(month, year);
 	}
-	
+
 	@Transactional(rollbackFor = HibernateException.class)
 	public void processEndOfDayBalances() {
-		
-		if(!eodBalanceStatusRepository.getEodBalanceStatusForToday()) {
-			if(interestHistoryRepository.updateInterestAmount()) {
-				eodBalanceStatusRepository.setEodBalanceStatusForToday();
-			}
+
+		if (!eodBalanceStatusRepository.getEodBalanceStatusForToday()
+				&& interestHistoryRepository.updateInterestAmount()) {
+			eodBalanceStatusRepository.setEodBalanceStatusForToday();
 		}
 	}
 }

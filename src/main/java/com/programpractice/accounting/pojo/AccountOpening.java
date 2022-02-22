@@ -6,45 +6,36 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-
-
 @Entity
 @Table(name = "account")
 public class AccountOpening {
-	
-	
-	@Id
-    @GeneratedValue(generator = "eid_generator")
-    @SequenceGenerator(
-            name = "eid_generator",
-            sequenceName = "id_sequence",
-            initialValue = 1
-    )
 
-    @Column(name = "identification")
-	private long identification;// (PK)				Int 	
+	@Id
+	@GeneratedValue(generator = "account_id_generator",strategy =  GenerationType.SEQUENCE)
+	@Column(name = "account_id")
+	private long identification;
 
 	@Column(name = "bsb")
-	private long bsb;//				Char ( 50)	
-	
-	 @JsonIgnore
-	 @Column(name = "opening_date")
-	 private LocalDateTime opening_date;//				date	
-	 
-	 @DecimalMin(value = "0.00", inclusive = true)
-	 @Digits(integer=10, fraction=2)
-	 @Column(name = "balance")
-	 @JsonIgnore
-	 private BigDecimal balance	;
-	
+	private long bsb;
+
+	@JsonIgnore
+	@Column(name = "openingdate")
+	private LocalDateTime openingDate;
+
+	@DecimalMin(value = "0.00", inclusive = true)
+	@Digits(integer = 10, fraction = 2)
+	@Column(name = "balance")
+	@JsonIgnore
+	private BigDecimal balance;
+
 	public long getIdentification() {
 		return identification;
 	}
@@ -61,14 +52,6 @@ public class AccountOpening {
 		this.bsb = bsb;
 	}
 
-	public LocalDateTime getOpening_date() {
-		return opening_date;
-	}
-	
-	public void setOpening_date(LocalDateTime opening_date) {
-		this.opening_date = opening_date;
-	}
-
 	public BigDecimal getBalance() {
 		return balance;
 	}
@@ -76,7 +59,13 @@ public class AccountOpening {
 	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
 	}
-	
-	
-	
+
+	public LocalDateTime getOpeningDate() {
+		return openingDate;
+	}
+
+	public void setOpeningDate(LocalDateTime openingDate) {
+		this.openingDate = openingDate;
+	}
+
 }

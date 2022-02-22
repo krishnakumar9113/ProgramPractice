@@ -32,36 +32,40 @@ import static com.programpractice.accounting.utils.Utilities.createJsonMessage;
 @RequestMapping("/transactions")
 public class AccountTransactionController {
 
-	@Autowired 
+	@Autowired
 	private AccountTransactionService accountTransactionService;
-	
-		
-	@PostMapping("/create-transactions/{identification}") 
-	private ResponseEntity saveTransactions( @Valid @RequestBody AccountTransaction transaction,@PathVariable("identification") long identification,
-			@RequestHeader("Idempotency-Key") String IKey, BindingResult bindingResult)   
-	{  
-		ResponseEntity responseEntity=null;
-		List<FieldError> be= new ArrayList<FieldError>();
-		 if (bindingResult.hasErrors()) {
+
+	@PostMapping("/create-transactions/{identification}")
+	public ResponseEntity<Object> saveTransactions(@Valid @RequestBody AccountTransaction transaction,
+			@PathVariable("identification") long identification, @RequestHeader("Idempotency-Key") String iKey,
+			BindingResult bindingResult) {
+		// TODO: update with DTO Objects
+		ResponseEntity<Object> responseEntity = null;
+		List<FieldError> be = new ArrayList<>();
+		if (bindingResult.hasErrors()) {
 			be.addAll(bindingResult.getFieldErrors());
-		 }
-		if(be.isEmpty()) {
-			transaction.setIkey(IKey);
+		}
+		if (be.isEmpty()) {
+			transaction.setIkey(iKey);
 			transaction.setTxnDate(LocalDateTime.now(Clock.systemUTC()));
-			TransactionStates transactionResult=accountTransactionService.createTransaction(transaction, identification);
-			if(transactionResult.equals(TransactionStates.CREATED)) {
-				responseEntity= ResponseEntity.status(HttpStatus.CREATED).body(createJsonMessage(UtilConstants.VALID_TRANSACTION_MESSAGE));
+			TransactionStates transactionResult = accountTransactionService.createTransaction(transaction,
+					identification);
+			if (transactionResult.equals(TransactionStates.CREATED)) {
+				responseEntity = ResponseEntity.status(HttpStatus.CREATED)
+						.body(createJsonMessage(UtilConstants.VALID_TRANSACTION_MESSAGE));
 			}
-			if(transactionResult.equals(TransactionStates.DUPLICATE_KEY)) {
-				responseEntity= ResponseEntity.status(HttpStatus.CONFLICT).body(createJsonMessage(UtilConstants.DUPLICATE_IKEY_MESSAGE));
+			if (transactionResult.equals(TransactionStates.DUPLICATE_KEY)) {
+				responseEntity = ResponseEntity.status(HttpStatus.CONFLICT)
+						.body(createJsonMessage(UtilConstants.DUPLICATE_IKEY_MESSAGE));
 			}
-			if(transactionResult.equals(TransactionStates.FAILED)) {
-				responseEntity= ResponseEntity.status(HttpStatus.BAD_REQUEST).body(createJsonMessage(UtilConstants.TRANSACTION_FAILED_MESSAGE));
+			if (transactionResult.equals(TransactionStates.FAILED)) {
+				responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body(createJsonMessage(UtilConstants.TRANSACTION_FAILED_MESSAGE));
 			}
-		
-		}else {
+
+		} else {
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(be);
 		}
-		return  responseEntity;			
-	}  
+		return responseEntity;
+	}
 }

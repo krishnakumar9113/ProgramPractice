@@ -29,27 +29,22 @@ public class AccountController {
 
 	@Autowired
 	AccountService accountService;
-	
-	@PostMapping("/process-account-opening")
-	public ResponseEntity processAccountOpening(@Valid @RequestBody AccountOpening account, BindingResult bindingResult)
 
+	@PostMapping("/process-account-opening")
+	public ResponseEntity<Object> processAccountOpening(@Valid @RequestBody AccountOpening accountOpening,
+			BindingResult bindingResult)
+	// Todo: update with DTO Objects
 	{
 		try {
-			List<FieldError> be= new ArrayList<FieldError>();
-			 if (bindingResult.hasErrors()) {
+			List<FieldError> be = new ArrayList<>();
+			if (bindingResult.hasErrors()) {
 				be.addAll(bindingResult.getFieldErrors());
-			 }
-			if(be.isEmpty()) {
-			
-				return ResponseEntity.status(HttpStatus.CREATED)
-						.body(accountService.createNewAccount(account));
-					
+			}
+			if (be.isEmpty()) {
+				return ResponseEntity.status(HttpStatus.CREATED).body(accountService.createNewAccount(accountOpening));
 			} else {
-				
-			
 				return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(be);
 			}
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			return ResponseEntity.badRequest()
@@ -57,15 +52,13 @@ public class AccountController {
 		}
 	}
 
-	@DeleteMapping ("/delete-account/{identification}")
-	public ResponseEntity processAccountOpening(@PathVariable("identification") long identifcationNumber) {
-		if(accountService.deleteAccountById(identifcationNumber)) {
-			return ResponseEntity.status(HttpStatus.OK)
-					.body(createJsonMessage("Account deleted successfully"));
-			
+	@DeleteMapping("/delete-account/{identification}")
+	public ResponseEntity<String> processAccountOpening(@PathVariable("identification") long identifcationNumber) {
+		if (accountService.deleteAccountById(identifcationNumber)) {
+			return ResponseEntity.status(HttpStatus.OK).body(createJsonMessage("Account deleted successfully"));
+
 		}
-		 return ResponseEntity.badRequest()
-					.body(createJsonMessage("Account deletion failed"));
-		
+		return ResponseEntity.badRequest().body(createJsonMessage("Account deletion failed"));
+
 	}
 }

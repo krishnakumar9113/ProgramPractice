@@ -8,62 +8,48 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Digits;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-
-
 @Entity
 @Table(name = "account")
 public class Account {
-	
-	
-	@Id
-    @GeneratedValue(generator = "eid_generator")
-    @SequenceGenerator(
-            name = "eid_generator",
-            sequenceName = "id_sequence",
-            initialValue = 1
-    )
 
-    @Column(name = "identification")
-	private long identification; 	
-	
+	@Id
+	@GeneratedValue(generator = "account_id_generator",strategy =  GenerationType.SEQUENCE)
+	@Column(name = "account_id")
+	private long identification;
+
 	@Column(name = "bsb")
 	private long bsb;
-	
-	 @DecimalMin(value = "0.00", inclusive = true)
-	 @Digits(integer=10, fraction=2)
-	 @Column(name = "balance")
-	 private BigDecimal balance	;
-	
-	 
-	 @JsonIgnore
-	 @Column(name = "opening_date")
-	 private LocalDateTime opening_date;//				date	
-	 
-	 
-	@JsonIgnore
-	@OneToMany(mappedBy = "account",cascade = CascadeType.ALL)
-	@OnDelete(action = OnDeleteAction.CASCADE )
-	private List<AccountTransaction>  accountTransaction;
+
+	@DecimalMin(value = "0.00", inclusive = true)
+	@Digits(integer = 10, fraction = 2)
+	@Column(name = "balance")
+	private BigDecimal balance;
 
 	@JsonIgnore
-	@OneToMany(mappedBy = "account",cascade = CascadeType.ALL)
-	@OnDelete(action = OnDeleteAction.CASCADE )
-	private List<InterestHistory>  interestHistory;
-	
+	@Column(name = "openingdate")
+	private LocalDateTime openingDate;
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<AccountTransaction> accountTransaction;
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private List<InterestHistory> interestHistory;
 
 	public void setTransactions(List<AccountTransaction> accountTransaction) {
 		this.accountTransaction = accountTransaction;
@@ -93,10 +79,8 @@ public class Account {
 		this.balance = balance;
 	}
 
-	public void setOpening_date(LocalDateTime opening_date) {
-		this.opening_date = opening_date;
+	public void setOpeningDate(LocalDateTime openingDate) {
+		this.openingDate = openingDate;
 	}
-	
-	
-	
+
 }

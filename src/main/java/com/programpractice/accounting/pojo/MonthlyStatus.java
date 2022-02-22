@@ -1,28 +1,32 @@
 package com.programpractice.accounting.pojo;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-
-import com.fasterxml.jackson.annotation.JsonGetter;
 
 public class MonthlyStatus {
+
+	private long identification;
+
+	private BigDecimal calculatedAmount;
+
+	public MonthlyStatus(Long identification, BigDecimal calculatedAmount) {
+		this.identification = identification;
+		this.calculatedAmount = calculatedAmount;
+	}
 
 	public long getIdentification() {
 		return identification;
 	}
+
 	public void setIdentification(long identification) {
 		this.identification = identification;
 	}
-	public BigDecimal getCalculatedamt() {
-		return calculatedamt;
-	}
-	public void setCalculatedamt(BigDecimal calculatedamt) {
-		this.calculatedamt = calculatedamt;
+
+	public BigDecimal getCalculatedAmount() {
+		return calculatedAmount;
 	}
 
-	private long  identification;
+	public void setCalculatedAmount(BigDecimal calculatedAmount) {
+		this.calculatedAmount = calculatedAmount;
+	}
 
-	private BigDecimal calculatedamt;
-	    
-	    
 }

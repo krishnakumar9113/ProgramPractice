@@ -23,38 +23,31 @@ import com.programpractice.accounting.service.AccountService;
 @AutoConfigureMockMvc
 class AccountControllerTest {
 
-	
 	@Autowired
 	private MockMvc mockMvc;
-	
-    @Mock
-    AccountRepository  accountRepsoitory;
-     
+
+	@Mock
+	AccountRepository accountRepsoitory;
 
 	@MockBean
 	private AccountService service;
-	
-    @Test
-    public void testCreateAccount() 
-    {
+
+	@Test
+	void testCreateAccount() {
 		AccountOpening accountOpening = new AccountOpening();
 		accountOpening.setBsb(123456);
-    	when(service.createNewAccount( Mockito.any(AccountOpening.class))).thenReturn(accountOpening);
+		when(service.createNewAccount(Mockito.any(AccountOpening.class))).thenReturn(accountOpening);
 		try {
-			mockMvc.perform( MockMvcRequestBuilders
-				      .post("/account/process-account-opening")
-				      .content(" { \"bsb\":\"123456\" }")
-				      .contentType(MediaType.APPLICATION_JSON)
-				      .accept(MediaType.APPLICATION_JSON))	
-				      .andExpect(status().isCreated())
-				      .andExpect(MockMvcResultMatchers.jsonPath("$.identification").exists());
-			
+			mockMvc.perform(
+					MockMvcRequestBuilders.post("/account/process-account-opening").content(" { \"bsb\":\"123456\" }")
+							.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+					.andExpect(status().isCreated())
+					.andExpect(MockMvcResultMatchers.jsonPath("$.identification").exists());
+
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-			}
-			 
-    
+
+	}
+
 }

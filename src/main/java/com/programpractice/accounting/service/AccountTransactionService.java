@@ -19,35 +19,43 @@ public class AccountTransactionService {
 
 	@Autowired
 	AccountTransactionsRepository transactionRepository;
-	
+
 	@Autowired
 	AccountRepository accountRepository;
-	
+
+	public AccountTransaction updateTransaction(Account account, AccountTransaction accountTransaction) {
+
+		if (TransactionType.CRDT.equals(accountTransaction.getTxnType())) {
+			account.setBalance(account.getBalance().add(accountTransaction.getTxnAmount()));
+		}
+		if (TransactionType.DBIT.equals(accountTransaction.getTxnType())) {
+			account.setBalance(account.getBalance().subtract(accountTransaction.getTxnAmount()));
+		}
+		if (TransactionType.EMPTY.equals(accountTransaction.getTxnType())) {
+			// do Nothing
+		}
+		accountTransaction.setAccount(account);
+		return accountTransaction;
+	}
+
 	@Transactional(rollbackFor = HibernateException.class)
-	public TransactionStates createTransaction (AccountTransaction transaction, long identification) {
-		 if(transactionRepository.checkValidTransaction(transaction.getIkey())) {
-			 	if(accountRepository.getAccountById(identification).isPresent()) {	
-			 		Account account=accountRepository.getAccountById(identification).get();
-			 		 if(TransactionType.CRDT.equals(transaction.getTxnType())) {
-		 	        	 account.setBalance(account.getBalance().add(transaction.getTxnAmount()));
-		 	         }
-		 	         if(TransactionType.DBIT.equals(transaction.getTxnType())) {
-		 	        	 account.setBalance(account.getBalance().subtract(transaction.getTxnAmount()));
-		 	         }
-		 	         if(TransactionType.EMPTY.equals(transaction.getTxnType())) {
-		 	        	//do Nothing
-		 	         }
-		 	         transaction.setAccount(account);
-		 	       if( accountRepository.updateAccount(account) && transactionRepository.saveOrUpdate(transaction)) {
-		 	    	  return TransactionStates.CREATED;
-		 	       }
-		 	    
-		 }else {
- 		    return TransactionStates.INVALID_ACCOUNT;
- 	  }
-	}else {
-		    return TransactionStates.DUPLICATE_KEY;
-	  }
-return TransactionStates.FAILED;
-}
+	public TransactionStates createTransaction(AccountTransaction transaction, long identification) {
+		if (transactionRepository.checkValidTransaction(transaction.getIkey())) {
+			Optional<Account> accountOptional = accountRepository.getAccountById(identification);
+			if (accountOptional.isPresent()) {
+				Account accountObj = accountOptional.get();
+				AccountTransaction accountTransaction = updateTransaction(accountObj, transaction);
+				if (accountRepository.updateAccount(accountObj)
+						&& transactionRepository.saveOrUpdate(accountTransaction)) {
+					return TransactionStates.CREATED;
+				}
+
+			} else {
+				return TransactionStates.INVALID_ACCOUNT;
+			}
+		} else {
+			return TransactionStates.DUPLICATE_KEY;
+		}
+		return TransactionStates.FAILED;
+	}
 }
